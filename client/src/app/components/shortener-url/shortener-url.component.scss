@@ -1,0 +1,86 @@
+$phone: 600px;
+
+.app-shortener-url {
+  height: 300px;
+  width: 600px;
+
+  .example-stretched-tabs {
+    height: 100%;
+    width: 100%;
+
+    .mat-tab-labels {
+      background-color: DodgerBlue;
+
+      .mat-tab-label-content {
+        color: white;
+      }
+
+      .mat-tab-label {
+        opacity: 1;
+      }
+    }
+
+    .mat-ink-bar {
+      background-color: white;
+    }
+
+    .mat-tab-body-wrapper {
+      height: calc(100% - 20px - 20px);
+      width: calc(100% - 20px - 20px);
+      padding: 20px;
+
+      .mat-form-field {
+        width: 100%;
+      }
+    }
+
+    .mat-raised-button {
+      height: 35px;
+      width: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      background-color: #1e90ff;
+      cursor: pointer;
+    }
+
+    .answer {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .text {
+      // width: 100%;
+      font-size: 14px;
+      font-weight: 300;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    a {
+      text-decoration: none;
+      color: steelblue;
+      font-size: 14px;
+      font-weight: 300;
+    }
+  }
+}
+
+h1 {
+  text-align: center;
+}
+
+@media (max-width: $phone) {
+  .app-shortener-url {
+    width: calc(100% - 20px - 20px - 1px - 1px);
+    padding: 0 20px;
+    .text {
+      width: 290px;
+    }
+  }
+}

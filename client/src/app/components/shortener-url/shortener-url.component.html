@@ -1,0 +1,33 @@
+<div class="app-shortener-url">
+  <h1>Custom URL shortener</h1>
+  <mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4" >
+
+    <mat-tab label="Original URL">
+      <mat-form-field>
+        <mat-label>original url*</mat-label>
+        <input matInput placeholder="Enter original Url" [(ngModel)]="original_url" />
+      </mat-form-field>
+      <button mat-raised-button (click)="getShortenerUrl()">SEND</button>
+      <div class="answer">Shortener URL Report:</div>
+      <div *ngIf="shortener_url_res" class="text">{{ shortener_url_res }}</div>
+      <div *ngIf="shortener_url_res">
+        <a href="{{serverURL}}/{{ shortener_url_res }}" target="_blank" >open with browse</a>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Shortener URL">
+      <mat-form-field>
+        <mat-label>shortener url*</mat-label>
+        <input matInput placeholder="Enter shortener Url" [(ngModel)]="shortener_url"/>
+      </mat-form-field>
+      <button mat-raised-button (click)="getOriginalUrl()">SEND</button>
+      <div class="answer">Original URL Report:</div>
+      <div *ngIf="original_url_res" class="text">{{ original_url_res }}</div>
+      <div *ngIf="original_url_res">
+        <a href="{{ original_url_res }}" target="_blank">open with browse</a>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+
+</div>
