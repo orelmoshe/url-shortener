@@ -16,9 +16,11 @@ Technologies: Node.js & Angular 9 & node-cache (as a demo DB)
 
 ## Run:
 
-- cd server & run npm install & npm start:prod
+-   ``` cd server & run npm install & npm start:prod  ```
 
-- cd client & run npn install & npm start.
+-   ``` cd client & run npn install & npm start.  ```
+
+- play at http://localhost:4200/ 
 
 ---
 
