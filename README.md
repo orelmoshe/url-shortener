@@ -2,7 +2,7 @@
 
 Custom URL shortener
 
-Technologies: Node.js & Angular 9 & node-cache (as a demo DB)
+Technologies: Node.js & Angular 9 & node-cache
 
 ---
 
