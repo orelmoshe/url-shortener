@@ -17,5 +17,5 @@ app.use(function (req, res, next) {
     next();
 });
 app.use('/', routes_1.router);
-app.listen(process.env.PORT || PORT, function () { console.log("Server is listening on port " + PORT); });
+app.listen(process.env.PORT || PORT, function () { return console.log("Server is listening on port " + PORT); });
 //# sourceMappingURL=index.js.map

@@ -39,34 +39,57 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Controller = void 0;
+var joi_1 = __importDefault(require("@hapi/joi"));
 var uuid_1 = require("uuid");
 var dns_1 = __importDefault(require("dns"));
-var NodeCache = require('node-cache');
+var node_cache_1 = __importDefault(require("node-cache"));
 var Controller = /** @class */ (function () {
     function Controller() {
-        var _this = this;
-        this.myCache = new NodeCache();
-        this.checkIfShortIdExists = function (shortId) {
-            for (var _i = 0, _a = _this.myCache.keys(); _i < _a.length; _i++) {
-                var key = _a[_i];
-                if (_this.myCache.get(key) === shortId)
-                    return key;
-            }
-            return null;
-        };
+        this.myCache = new node_cache_1.default();
         if (Controller.instance) {
             return Controller.instance;
         }
+        this.addNewUrl = this.addNewUrl.bind(this);
+        this.getLinkUrl = this.getLinkUrl.bind(this);
+        this.getOriginalUrl = this.getOriginalUrl.bind(this);
+        this.getShortUrlByOriginalUrl = this.getShortUrlByOriginalUrl.bind(this);
         Controller.instance = this;
     }
+    Controller.prototype.getShortUrlByOriginalUrl = function (originalUrl) {
+        try {
+            var keys = this.myCache.keys() || [];
+            for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
+                var key = keys_1[_i];
+                var value = this.myCache.get(key);
+                if (value === originalUrl) {
+                    return key;
+                }
+            }
+            return null;
+        }
+        catch (ex) {
+            console.error(ex);
+            throw ex;
+        }
+    };
     Controller.prototype.addNewUrl = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var originalUrl, shortId;
+            var schema, result, url_1, originalUrl;
+            var _this = this;
             return __generator(this, function (_a) {
                 try {
+                    schema = joi_1.default.object().keys({
+                        url: joi_1.default.string().required(),
+                    });
+                    result = schema.validate(req.body);
+                    if (result.error) {
+                        throw result.error.message;
+                    }
+                    url_1 = req.body.url;
                     originalUrl = void 0;
                     try {
-                        originalUrl = new URL(req.body.url);
+                        originalUrl = new URL(url_1);
                     }
                     catch (ex) {
                         throw 'invalid URL';
@@ -75,16 +98,14 @@ var Controller = /** @class */ (function () {
                         if (err) {
                             throw 'Address not found';
                         }
-                    });
-                    shortId = void 0;
-                    if (this.myCache.has(originalUrl.href)) {
-                        shortId = this.myCache.get(originalUrl.href);
+                        var shortId = _this.getShortUrlByOriginalUrl(url_1);
+                        if (shortId) {
+                            return res.status(200).json(shortId);
+                        }
+                        shortId = uuid_1.v4();
+                        _this.myCache.set(shortId, url_1);
                         res.status(200).json(shortId);
-                        return [2 /*return*/];
-                    }
-                    shortId = uuid_1.v4();
-                    this.myCache.set(originalUrl.href, shortId);
-                    res.status(200).json(shortId);
+                    });
                 }
                 catch (ex) {
                     console.error(ex);
@@ -96,11 +117,18 @@ var Controller = /** @class */ (function () {
     };
     Controller.prototype.getLinkUrl = function (req, res) {
         try {
+            var schema = joi_1.default.object().keys({
+                short_id: joi_1.default.string().required(),
+            });
+            var result = schema.validate(req.params);
+            if (result.error) {
+                throw result.error.message;
+            }
             var shortId = req.params.short_id;
-            var originalUrl = this.checkIfShortIdExists(shortId);
-            if (!originalUrl) {
+            if (!this.myCache.has(shortId)) {
                 throw 'Uh oh. We could not find a link at that URL';
             }
+            var originalUrl = this.myCache.get(shortId);
             res.redirect(originalUrl);
         }
         catch (ex) {
@@ -110,11 +138,18 @@ var Controller = /** @class */ (function () {
     };
     Controller.prototype.getOriginalUrl = function (req, res) {
         try {
+            var schema = joi_1.default.object().keys({
+                short_id: joi_1.default.string().required(),
+            });
+            var result = schema.validate(req.body);
+            if (result.error) {
+                throw result.error.message;
+            }
             var shortId = req.body.short_id;
-            var originalUrl = this.checkIfShortIdExists(shortId);
-            if (!originalUrl) {
+            if (!this.myCache.has(shortId)) {
                 throw 'Uh oh. We could not find a link at that URL';
             }
+            var originalUrl = this.myCache.get(shortId);
             res.status(200).json(originalUrl);
         }
         catch (ex) {
